@@ -13,6 +13,7 @@ import {ClipShadowEffect} from '../effect/clip_shadow_effect.js';
 import {RoundedCornersEffect} from '../effect/rounded_corners_effect.js';
 import {
     CLIP_SHADOW_EFFECT,
+    COMPIZ_WOBBLY_EFFECT,
     ROUNDED_CORNERS_EFFECT,
 } from '../utils/constants.js';
 import {logDebug} from '../utils/log.js';
@@ -99,6 +100,7 @@ function createEffect(actor: RoundedWindowActor) {
     actor.rwcCustomData = {
         shadow,
         unminimizedTimeoutId: 0,
+        compizWobblyTimeoutId: 0,
         propertyBindings,
     };
 
@@ -130,6 +132,10 @@ export function onRemoveEffect(actor: RoundedWindowActor) {
     const timeoutId = actor.rwcCustomData?.unminimizedTimeoutId;
     if (timeoutId) {
         GLib.source_remove(timeoutId);
+    }
+    const compizWobblyTimeoutId = actor.rwcCustomData?.compizWobblyTimeoutId;
+    if (compizWobblyTimeoutId) {
+        GLib.source_remove(compizWobblyTimeoutId);
     }
     delete actor.rwcCustomData;
 }
@@ -212,6 +218,45 @@ export const onSizeChanged = refreshRoundedCorners;
 export const onFocusChanged = refreshShadow;
 
 export const onSettingsChanged = refreshAllRoundedCorners;
+
+export function onCompizWobblyEffectChanged(actor: RoundedWindowActor) {
+    GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+        updateCompizWobblyShadow(actor);
+        return GLib.SOURCE_REMOVE;
+    });
+}
+
+function updateCompizWobblyShadow(actor: RoundedWindowActor) {
+    const windowInfo = actor.rwcCustomData;
+    if (!windowInfo) return;
+
+    const hasCompizWobblyEffect =
+        actor.get_effect(COMPIZ_WOBBLY_EFFECT) !== null;
+    windowInfo.shadow.visible = actor.visible && !hasCompizWobblyEffect;
+
+    if (!hasCompizWobblyEffect || windowInfo.compizWobblyTimeoutId !== 0) {
+        return;
+    }
+
+    windowInfo.compizWobblyTimeoutId = GLib.timeout_add(
+        GLib.PRIORITY_DEFAULT,
+        100,
+        () => {
+            const currentWindowInfo = actor.rwcCustomData;
+            if (!currentWindowInfo) return GLib.SOURCE_REMOVE;
+
+            const stillHasCompizWobblyEffect =
+                actor.get_effect(COMPIZ_WOBBLY_EFFECT) !== null;
+            currentWindowInfo.shadow.visible =
+                actor.visible && !stillHasCompizWobblyEffect;
+
+            if (stillHasCompizWobblyEffect) return GLib.SOURCE_CONTINUE;
+
+            currentWindowInfo.compizWobblyTimeoutId = 0;
+            return GLib.SOURCE_REMOVE;
+        },
+    );
+}
 
 /**
  * Create the shadow actor for a window.

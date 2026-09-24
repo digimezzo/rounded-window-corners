@@ -65,6 +65,36 @@ export function enableEffect() {
         if (hasMetaWindow(actor)) handlers.onUnminimize(actor);
     });
 
+    connect(
+        global.display,
+        'grab-op-begin',
+        (_: Meta.Display, win: Meta.Window) => {
+            const actor = win?.get_compositor_private() as Meta.WindowActor;
+            if (actor && hasMetaWindow(actor)) {
+                handlers.onCompizWobblyEffectChanged(actor);
+            }
+        },
+    );
+
+    connect(
+        global.display,
+        'grab-op-end',
+        (_: Meta.Display, win: Meta.Window) => {
+            const actor = win?.get_compositor_private() as Meta.WindowActor;
+            if (actor && hasMetaWindow(actor)) {
+                handlers.onCompizWobblyEffectChanged(actor);
+            }
+        },
+    );
+
+    connect(wm, 'size-change', (_: Shell.WM, actor: Meta.WindowActor) => {
+        if (hasMetaWindow(actor)) handlers.onCompizWobblyEffectChanged(actor);
+    });
+
+    connect(wm, 'size-changed', (_: Shell.WM, actor: Meta.WindowActor) => {
+        if (hasMetaWindow(actor)) handlers.onCompizWobblyEffectChanged(actor);
+    });
+
     // When closing the window, remove the effect from it.
     connect(wm, 'destroy', (_: Shell.WM, actor: Meta.WindowActor) =>
         removeEffectFrom(actor),

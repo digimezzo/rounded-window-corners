@@ -54,6 +54,7 @@ export type RoundedWindowActor = Meta.WindowActor & {
     rwcCustomData?: {
         shadow: St.Bin;
         unminimizedTimeoutId: number;
+        compizWobblyTimeoutId: number;
         propertyBindings: GObject.Binding[];
     };
     rwcLock?: Promise<void>;

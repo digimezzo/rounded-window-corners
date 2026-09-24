@@ -6,6 +6,9 @@ export const ROUNDED_CORNERS_EFFECT = 'Rounded Corners Effect';
 /** Name of the shadow clipping effect  */
 export const CLIP_SHADOW_EFFECT = 'Clip Shadow Effect';
 
+/** Name of the effect used by the Compiz windows effect extension */
+export const COMPIZ_WOBBLY_EFFECT = 'wobbly-compiz-effect';
+
 /** Padding of shadow actors */
 export const SHADOW_PADDING = 80;
 
