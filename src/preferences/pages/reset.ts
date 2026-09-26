@@ -53,6 +53,8 @@ export const ResetPage = GObject.registerClass(
             'unfocused-shadow': 'Unfocus Window Shadow Style',
             'keep-shadow-for-maximized-fullscreen':
                 'Keep Window Shadows when Maximized or Fullscreen',
+            'hide-shadow-during-compiz-effect':
+                'Hide Window Shadows during Compiz Effects',
             'border-width': 'Border Width',
             'debug-mode': 'Enable Log',
 

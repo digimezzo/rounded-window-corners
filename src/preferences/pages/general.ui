@@ -141,6 +141,12 @@
           </object>
         </child>
         <child>
+          <object class="AdwSwitchRow" id="hideShadowDuringCompizEffect">
+            <property name="title" translatable="yes">Hide shadows during Compiz window effects</property>
+            <property name="subtitle" translatable="yes">Avoid rectangular shadows while windows wobble</property>
+          </object>
+        </child>
+        <child>
           <object class="AdwSwitchRow" id="keepForMaximized">
             <property name="title" translatable="yes">Keep rounded corners for maximized windows</property>
           </object>

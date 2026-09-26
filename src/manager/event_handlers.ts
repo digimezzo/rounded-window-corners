@@ -106,6 +106,7 @@ function createEffect(actor: RoundedWindowActor) {
 
     // Make sure the effect is applied correctly.
     updateEffect(actor);
+    updateCompizWobblyShadow(actor);
 }
 
 export function onRemoveEffect(actor: RoundedWindowActor) {
@@ -217,7 +218,14 @@ export const onSizeChanged = refreshRoundedCorners;
 
 export const onFocusChanged = refreshShadow;
 
-export const onSettingsChanged = refreshAllRoundedCorners;
+export function onSettingsChanged() {
+    refreshAllRoundedCorners();
+    for (const actor of global.get_window_actors()) {
+        if (hasMetaWindow(actor)) {
+            updateCompizWobblyShadow(actor);
+        }
+    }
+}
 
 export function onCompizWobblyEffectChanged(actor: RoundedWindowActor) {
     GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
@@ -229,6 +237,15 @@ export function onCompizWobblyEffectChanged(actor: RoundedWindowActor) {
 function updateCompizWobblyShadow(actor: RoundedWindowActor) {
     const windowInfo = actor.rwcCustomData;
     if (!windowInfo) return;
+
+    if (!getPref('hide-shadow-during-compiz-effect')) {
+        windowInfo.shadow.visible = actor.visible;
+        if (windowInfo.compizWobblyTimeoutId !== 0) {
+            GLib.source_remove(windowInfo.compizWobblyTimeoutId);
+            windowInfo.compizWobblyTimeoutId = 0;
+        }
+        return;
+    }
 
     const hasCompizWobblyEffect =
         actor.get_effect(COMPIZ_WOBBLY_EFFECT) !== null;

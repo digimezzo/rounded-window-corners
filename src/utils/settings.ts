@@ -27,6 +27,7 @@ type Schema = {
     'focused-shadow': BoxShadow;
     'unfocused-shadow': BoxShadow;
     'keep-shadow-for-maximized-fullscreen': boolean;
+    'hide-shadow-during-compiz-effect': boolean;
     'debug-mode': boolean;
     'tweak-kitty-terminal': boolean;
 };
@@ -47,6 +48,7 @@ export const Schema = {
     'focused-shadow': 'a{si}',
     'unfocused-shadow': 'a{si}',
     'keep-shadow-for-maximized-fullscreen': 'b',
+    'hide-shadow-during-compiz-effect': 'b',
     'debug-mode': 'b',
     'tweak-kitty-terminal': 'b',
 };

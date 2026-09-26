@@ -36,6 +36,7 @@ export const GeneralPage = GObject.registerClass(
             'cornerRadius',
             'cornerSmoothing',
             'keepShadowForMaximizedFullscreen',
+            'hideShadowDuringCompizEffect',
             'keepForMaximized',
             'keepForFullscreen',
             'paddings',
@@ -51,6 +52,7 @@ export const GeneralPage = GObject.registerClass(
         private declare _cornerRadius: Gtk.Adjustment;
         private declare _cornerSmoothing: Gtk.Adjustment;
         private declare _keepShadowForMaximizedFullscreen: Adw.SwitchRow;
+        private declare _hideShadowDuringCompizEffect: Adw.SwitchRow;
         private declare _keepForMaximized: Adw.SwitchRow;
         private declare _keepForFullscreen: Adw.SwitchRow;
         private declare _paddings: PaddingsRowClass;
@@ -122,6 +124,13 @@ export const GeneralPage = GObject.registerClass(
             bindPref(
                 'keep-shadow-for-maximized-fullscreen',
                 this._keepShadowForMaximizedFullscreen,
+                'active',
+                Gio.SettingsBindFlags.DEFAULT,
+            );
+
+            bindPref(
+                'hide-shadow-during-compiz-effect',
+                this._hideShadowDuringCompizEffect,
                 'active',
                 Gio.SettingsBindFlags.DEFAULT,
             );
